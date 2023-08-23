@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Add meta tag for viewport settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <h2>Email 1:</h2>
+    <form action="%%=RequestParameter('PAGEURL')=%%" method="GET">
+        <label for="email">Email address:</label>
+        <input type="email" id="email" name="email" required="yes">
+        <input name="submitted" type="hidden" value="Success"><br>
+        <button type="submit" name="Submit" id="Submit" value="Success">Submit</button>
+    </form>
+
+    <script runat="server">
+        Platform.Load("Core", "1");
+        try {
+
+            var email = Request.GetQueryStringParameter("email");
+
+            var authEndpoint = 'https://mcym51fzpj27crwvg1c0mptm-924.auth.marketingcloudapis.com/';
+            var payload = {
+                client_id: "a0xu46hyiububgqrvut0tlxs",
+                client_secret: "ipSAqMtrzFrMNOtWYLguFjUm",
+                grant_type: "client_credentials"
+            };
+            var url = authEndpoint + '/v2/token';
+            var contentType = 'application/json';
+
+            var accessTokenRequest = HTTP.Post(url, contentType, Stringify(payload));
+
+            if (accessTokenRequest.StatusCode == 200) {
+                var tokenResponse = Platform.Function.ParseJSON(accessTokenRequest.Response[0]);
+                var accessToken = tokenResponse.access_token;
+                var rest_instance_url = tokenResponse.rest_instance_url;
+
+                if (email != null && accessToken != null) {
+                    var headerNames = ["Authorization"];
+                    var headerValues = ["Bearer " + accessToken];
+                    var jsonBody = {
+                        "ContactKey": email, // Use the email as the ContactKey
+                        "EventDefinitionKey": "APIEvent-e69c0d0c-49e5-07a8-92f2-25f35493e1ff", //DE Name: VEEV_API_Journey_Entry_Test
+                        "Data": {
+                            "SubscriberKey": email,
+                            "EmailAddress": email,
+                            "Answer": "Yellow",
+                            "Language": "EN",
+                            "OptIn": true,
+                            "Email_to_Send": true,
+                            "CreatedDate": Platform.Function.SystemDateToLocalDate(Now())
+
+                        }
+                    };
+
+                    var requestUrl = rest_instance_url + "/interaction/v1/events";
+
+                    var fireEntryEvent = HTTP.Post(requestUrl, contentType, Stringify(jsonBody), headerNames, headerValues);
+
+                    /*if (fireEntryEvent.StatusCode == 201) {
+                        Write("Success");
+                    }*/
+                }
+            }
+        } catch (error) {
+            Write("Error: " + Stringify(error));
+        }
+    </script>
+
+</body>
+
+</html>
