@@ -21,10 +21,10 @@
 
             var email = Request.GetQueryStringParameter("email");
 
-            var authEndpoint = 'https://mcym51fzpj27crwvg1c0mptm-924.auth.marketingcloudapis.com/';
+            var authEndpoint = 'https://xxx.auth.marketingcloudapis.com/';
             var payload = {
-                client_id: "a0xu46hyiububgqrvut0tlxs",
-                client_secret: "ipSAqMtrzFrMNOtWYLguFjUm",
+                client_id: "xxx",
+                client_secret: "xxx",
                 grant_type: "client_credentials"
             };
             var url = authEndpoint + '/v2/token';
@@ -42,7 +42,7 @@
                     var headerValues = ["Bearer " + accessToken];
                     var jsonBody = {
                         "ContactKey": email, // Use the email as the ContactKey
-                        "EventDefinitionKey": "APIEvent-e69c0d0c-49e5-07a8-92f2-25f35493e1ff", //DE Name: VEEV_API_Journey_Entry_Test
+                        "EventDefinitionKey": "APIEvent-xxxx-xxxx-xxxx-xxxx-xxxx", //DE Name: VEEV_API_Journey_Entry_Test
                         "Data": {
                             "SubscriberKey": email,
                             "EmailAddress": email,
